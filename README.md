@@ -13,7 +13,8 @@ It consists of 3 main modules :
 
 ## Roadmap 
 
-[ ] Implement a first BDD test using cucumber, like creating a movie
+[X] Implement a first BDD test using cucumber, like creating a movie
 
 [ ] Implement the case where this test works by implementing through domain and repository
 
+## Notes
