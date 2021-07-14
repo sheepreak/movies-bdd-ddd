@@ -1,9 +1,9 @@
 package fr.sheepreak.movie.app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.sheepreak.movie.domain.infrastructure.MovieRepository;
 import fr.sheepreak.movie.domain.model.CreateMovieOperation;
 import fr.sheepreak.movie.domain.model.Movie;
-import fr.sheepreak.movie.domain.infrastructure.MovieRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -19,7 +19,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @CucumberContextConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = MovieControllerITConfiguration.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application.yml")
 public class MovieControllerITSteps {
@@ -43,7 +45,7 @@ public class MovieControllerITSteps {
     this.objectMapper = objectMapper;
   }
 
-  @Given("^a movie with title \"([^\"]*)\" and director \"([^\"]*)\"$")
+  @Given("a movie with title {string} and director {string}")
   public void aMovieWithTitleAndDirector(String title, String director) {
     movieWorld.setTitle(title);
     movieWorld.setDirector(director);
@@ -69,7 +71,7 @@ public class MovieControllerITSteps {
     movieWorld.setId(Long.valueOf(location.substring(location.lastIndexOf("/") + 1)));
   }
 
-  @Then("movie is created with title \"([^\"]*)\" and director \"([^\"]*)\"")
+  @Then("movie is created with title {string} and director {string}")
   public void movieIsCreatedWithTitleAndDirector(String title, String director) {
     Movie movie = movieRepository.getById(movieWorld.getId());
 
