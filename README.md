@@ -15,6 +15,10 @@ It consists of 3 main modules :
 
 [X] Implement a first BDD test using cucumber, like creating a movie
 
-[ ] Implement the case where this test works by implementing through domain and repository
+[X] Implement the case where this test works by implementing through domain and repository
+
+[X] Write second BDD test for a get endpoint
+
+[X] Implement
 
 ## Notes

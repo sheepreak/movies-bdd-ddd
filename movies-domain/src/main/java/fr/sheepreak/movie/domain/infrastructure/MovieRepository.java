@@ -8,4 +8,6 @@ public interface MovieRepository {
   Movie getById(Long id);
 
   Movie save(CreateMovieOperation createMovieOperation);
+
+  Movie getByTitle(String title);
 }

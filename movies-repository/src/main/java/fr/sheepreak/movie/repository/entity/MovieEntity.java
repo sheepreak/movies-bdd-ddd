@@ -13,7 +13,8 @@ public class MovieEntity {
   @Column
   private Long id;
 
-  @Column private String title;
+  @Column(unique = true)
+  private String title;
 
   @Column private String director;
 
@@ -21,10 +22,6 @@ public class MovieEntity {
 
   public Long getId() {
     return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public String getTitle() {

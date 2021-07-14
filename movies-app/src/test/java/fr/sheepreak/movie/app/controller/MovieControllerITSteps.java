@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application.yml")
 public class MovieControllerITSteps {
+  private static final String MOVIE_URL = "/api/movies";
 
   private MockMvc mockMvc;
 
@@ -56,7 +57,7 @@ public class MovieControllerITSteps {
     MvcResult mvcResult =
         mockMvc
             .perform(
-                MockMvcRequestBuilders.post("/api/movies")
+                MockMvcRequestBuilders.post(MOVIE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("UTF-8")
                     .content(
@@ -71,12 +72,31 @@ public class MovieControllerITSteps {
     movieWorld.setId(Long.valueOf(location.substring(location.lastIndexOf("/") + 1)));
   }
 
-  @Then("movie is created with title {string} and director {string}")
+  @Then("movie is returned with title {string} and director {string}")
   public void movieIsCreatedWithTitleAndDirector(String title, String director) {
     Movie movie = movieRepository.getById(movieWorld.getId());
 
     Assertions.assertAll(
         () -> Assertions.assertEquals(movie.getTitle(), title),
         () -> Assertions.assertEquals(movie.getDirector(), director));
+  }
+
+  @Given("a movie inserted in base with title {string} and director {string}")
+  public void aMovieInsertedInBaseWithTitleAndDirector(String title, String director) {
+    movieRepository.save(new CreateMovieOperation(title, director));
+  }
+
+  @When("user gets movie with title {string}")
+  public void userGetsMovieWithTitle(String title) throws Exception {
+    MvcResult mvcResult =
+        mockMvc
+            .perform(MockMvcRequestBuilders.get(MOVIE_URL).param("title", title))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
+
+    Movie movie = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Movie.class);
+    movieWorld.setId(movie.getId());
+    movieWorld.setTitle(movie.getTitle());
+    movieWorld.setDirector(movie.getDirector());
   }
 }

@@ -37,4 +37,15 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     return movieMapper.movieEntitytoDto(movieJpaRepository.save(movieEntity));
   }
+
+  @Override
+  public Movie getByTitle(String title) {
+    return movieMapper.movieEntitytoDto(
+        movieJpaRepository
+            .findByTitle(title)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        String.format("No movie was found with given title %s", title))));
+  }
 }
