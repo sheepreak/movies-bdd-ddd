@@ -18,5 +18,5 @@ public interface MovieMapper {
   @Mapping(source = "id", target = "id")
   @Mapping(source = "title", target = "title")
   @Mapping(source = "director", target = "director")
-  Movie movieEntitytoDto(MovieEntity movieEntity);
+  Movie movieEntityToDto(MovieEntity movieEntity);
 }

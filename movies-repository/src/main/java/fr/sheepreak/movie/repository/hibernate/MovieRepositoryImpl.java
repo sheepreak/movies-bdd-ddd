@@ -20,7 +20,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
   @Override
   public Movie getById(Long id) {
-    return movieMapper.movieEntitytoDto(
+    return movieMapper.movieEntityToDto(
         movieJpaRepository
             .findById(id)
             .orElseThrow(
@@ -35,12 +35,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     movieMapper.createMovieFromOperation(movieEntity, createMovieOperation);
 
-    return movieMapper.movieEntitytoDto(movieJpaRepository.save(movieEntity));
+    return movieMapper.movieEntityToDto(movieJpaRepository.save(movieEntity));
   }
 
   @Override
   public Movie getByTitle(String title) {
-    return movieMapper.movieEntitytoDto(
+    return movieMapper.movieEntityToDto(
         movieJpaRepository
             .findByTitle(title)
             .orElseThrow(

@@ -5,7 +5,6 @@ import fr.sheepreak.movie.domain.model.Movie;
 import fr.sheepreak.movie.domain.service.MovieService;
 import fr.sheepreak.movie.repository.exception.NotFoundException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,7 +15,7 @@ import java.net.URI;
 @RequestMapping("/api/movies")
 public class MovieController {
 
-  private MovieService movieService;
+  private final MovieService movieService;
 
   public MovieController(MovieService movieService) {
     this.movieService = movieService;

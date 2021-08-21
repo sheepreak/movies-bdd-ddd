@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.sheepreak.movie.domain.infrastructure.MovieRepository;
 import fr.sheepreak.movie.domain.model.CreateMovieOperation;
 import fr.sheepreak.movie.domain.model.Movie;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -34,10 +33,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MovieControllerITSteps {
   private static final String MOVIE_URL = "/api/movies";
 
-  private MockMvc mockMvc;
-  private MovieWorld movieWorld;
-  private MovieRepository movieRepository;
-  private ObjectMapper objectMapper;
+  private final MockMvc mockMvc;
+  private final MovieWorld movieWorld;
+  private final MovieRepository movieRepository;
+  private final ObjectMapper objectMapper;
 
   private ResultActions resultActions;
 
@@ -70,11 +69,18 @@ public class MovieControllerITSteps {
   }
 
   @Then("a movie is returned with title {string} and director {string}")
-  public void movieIsReturnedWithTitleAndDirector(String title, String director) {
+  public void movieIsReturnedWithTitleAndDirector(String title, String director) throws Exception {
     String location = resultActions.andReturn().getResponse().getHeader("location");
 
     if (Objects.nonNull(location)) {
       movieWorld.setId(Long.valueOf(location.substring(location.lastIndexOf("/") + 1)));
+    } else {
+      Movie movie =
+          objectMapper.readValue(
+              resultActions.andReturn().getResponse().getContentAsString(), Movie.class);
+      movieWorld.setId(movie.getId());
+      movieWorld.setTitle(movie.getTitle());
+      movieWorld.setDirector(movie.getDirector());
     }
 
     if (Objects.isNull(movieWorld.getTitle()) || Objects.isNull(movieWorld.getDirector())) {
@@ -96,13 +102,6 @@ public class MovieControllerITSteps {
   @When("user gets movie with title {string}")
   public void userGetsMovieWithTitle(String title) throws Exception {
     resultActions = mockMvc.perform(MockMvcRequestBuilders.get(MOVIE_URL).param("title", title));
-
-    Movie movie =
-        objectMapper.readValue(
-            resultActions.andReturn().getResponse().getContentAsString(), Movie.class);
-    movieWorld.setId(movie.getId());
-    movieWorld.setTitle(movie.getTitle());
-    movieWorld.setDirector(movie.getDirector());
   }
 
   @Given("no existing movie")
