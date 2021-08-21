@@ -1,9 +1,17 @@
 package fr.sheepreak.movie.domain.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class CreateMovieOperation {
 
+  @NotNull
+  @Size(min = 1, max = 191)
   private String title;
 
+  @NotNull
+  @Pattern(regexp = "^[A-Za-z ]+$")
   private String director;
 
   public CreateMovieOperation() {}

@@ -5,9 +5,11 @@ import fr.sheepreak.movie.domain.model.Movie;
 import fr.sheepreak.movie.domain.service.MovieService;
 import fr.sheepreak.movie.repository.exception.NotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -21,7 +23,8 @@ public class MovieController {
   }
 
   @PostMapping
-  public ResponseEntity<Void> createMovie(@RequestBody CreateMovieOperation createMovieOperation) {
+  public ResponseEntity<Void> createMovie(
+      @RequestBody @Valid CreateMovieOperation createMovieOperation) {
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")

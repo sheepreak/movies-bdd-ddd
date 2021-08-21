@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.sheepreak.movie.domain.infrastructure.MovieRepository;
 import fr.sheepreak.movie.domain.model.CreateMovieOperation;
 import fr.sheepreak.movie.domain.model.Movie;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Objects;
 
@@ -56,12 +58,6 @@ public class MovieControllerITSteps {
     movieWorld.reset();
   }
 
-  @Given("a movie with title {string} and director {string}")
-  public void aMovieWithTitleAndDirector(String title, String director) {
-    movieWorld.setTitle(title);
-    movieWorld.setDirector(director);
-  }
-
   @When("user creates a movie with title {string} and director {string}")
   public void userCreatesMovie(String title, String director) throws Exception {
     resultActions =
@@ -71,14 +67,16 @@ public class MovieControllerITSteps {
                 .characterEncoding("UTF-8")
                 .content(
                     objectMapper.writeValueAsBytes(new CreateMovieOperation(title, director))));
-
-    String location = resultActions.andReturn().getResponse().getHeader("Location");
-    assertNotNull(location);
-    movieWorld.setId(Long.valueOf(location.substring(location.lastIndexOf("/") + 1)));
   }
 
   @Then("a movie is returned with title {string} and director {string}")
   public void movieIsReturnedWithTitleAndDirector(String title, String director) {
+    String location = resultActions.andReturn().getResponse().getHeader("location");
+
+    if (Objects.nonNull(location)) {
+      movieWorld.setId(Long.valueOf(location.substring(location.lastIndexOf("/") + 1)));
+    }
+
     if (Objects.isNull(movieWorld.getTitle()) || Objects.isNull(movieWorld.getDirector())) {
       Movie movie = movieRepository.getById(movieWorld.getId());
       movieWorld.setDirector(movie.getDirector());
@@ -114,5 +112,20 @@ public class MovieControllerITSteps {
   @Then("the call returns a {int} status")
   public void theCallReturnsAStatus(int status) throws Exception {
     resultActions.andExpect(MockMvcResultMatchers.status().is(status));
+  }
+
+  @Then("has {int} validation errors")
+  public void hasValidationErrors(int validationErrors) throws Exception {
+    resultActions
+        .andExpect(
+            result ->
+                assertTrue(
+                    result.getResolvedException() instanceof MethodArgumentNotValidException))
+        .andExpect(
+            result ->
+                assertTrue(
+                    Objects.requireNonNull(result.getResolvedException())
+                        .getMessage()
+                        .contains("with " + validationErrors + " errors")));
   }
 }

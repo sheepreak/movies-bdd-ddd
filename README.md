@@ -21,4 +21,6 @@ It consists of 3 main modules :
 
 [X] Implement
 
+[X] Implement testing for validation
+
 ## Notes
