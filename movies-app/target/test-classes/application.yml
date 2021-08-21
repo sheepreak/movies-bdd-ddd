@@ -1,9 +1,0 @@
-# DataSource H2
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-  datasource:
-    url: jdbc:h2:mem:MovieDB
-    username: user
-    password:

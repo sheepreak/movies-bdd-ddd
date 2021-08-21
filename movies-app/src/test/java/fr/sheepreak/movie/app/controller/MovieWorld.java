@@ -31,4 +31,10 @@ public class MovieWorld {
   public void setDirector(String director) {
     this.director = director;
   }
+
+  public void reset() {
+    id = null;
+    title = null;
+    director = null;
+  }
 }
