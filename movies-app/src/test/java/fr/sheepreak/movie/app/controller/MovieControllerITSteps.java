@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.sheepreak.movie.domain.infrastructure.MovieRepository;
 import fr.sheepreak.movie.domain.model.CreateMovieOperation;
 import fr.sheepreak.movie.domain.model.Movie;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(locations = "classpath:application.yml")
 public class MovieControllerITSteps {
   private static final String MOVIE_URL = "/api/movies";
+  private static final String DIRECTOR_ENDPOINT = "/director";
 
   private final MockMvc mockMvc;
   private final MovieWorld movieWorld;
@@ -105,7 +106,6 @@ public class MovieControllerITSteps {
   }
 
   @Given("no existing movie")
-  @Sql("/sql/cleanMovies.sql")
   public void noExistingMovie() {}
 
   @Then("the call returns a {int} status")
@@ -126,5 +126,17 @@ public class MovieControllerITSteps {
                     Objects.requireNonNull(result.getResolvedException())
                         .getMessage()
                         .contains("with " + validationErrors + " errors")));
+  }
+
+  @When("user gets movie with director {string}")
+  public void userGetsMovieWithDirector(String director) throws Exception {
+    resultActions =
+        mockMvc.perform(
+            MockMvcRequestBuilders.get(MOVIE_URL + DIRECTOR_ENDPOINT).param("director", director));
+  }
+
+  @And("{int} movies are returned")
+  public void moviesAreReturned(int size) throws Exception {
+    resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(size));
   }
 }

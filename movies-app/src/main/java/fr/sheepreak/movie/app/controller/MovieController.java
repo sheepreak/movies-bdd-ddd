@@ -10,6 +10,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/movies")
@@ -40,5 +41,10 @@ public class MovieController {
     } catch (NotFoundException e) {
       return ResponseEntity.notFound().build();
     }
+  }
+
+  @GetMapping("/director")
+  public ResponseEntity<List<Movie>> getMoviesByDirector(@RequestParam String director) {
+    return ResponseEntity.ok(movieService.getMoviesByDirector(director));
   }
 }

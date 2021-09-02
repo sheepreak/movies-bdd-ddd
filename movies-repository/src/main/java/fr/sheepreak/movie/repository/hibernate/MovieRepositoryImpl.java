@@ -8,11 +8,14 @@ import fr.sheepreak.movie.repository.exception.NotFoundException;
 import fr.sheepreak.movie.repository.mapper.MovieMapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MovieRepositoryImpl implements MovieRepository {
 
-  private MovieJpaRepository movieJpaRepository;
+  private final MovieJpaRepository movieJpaRepository;
 
-  private MovieMapper movieMapper = Mappers.getMapper(MovieMapper.class);
+  private final MovieMapper movieMapper = Mappers.getMapper(MovieMapper.class);
 
   public MovieRepositoryImpl(MovieJpaRepository movieJpaRepository) {
     this.movieJpaRepository = movieJpaRepository;
@@ -47,5 +50,12 @@ public class MovieRepositoryImpl implements MovieRepository {
                 () ->
                     new NotFoundException(
                         String.format("No movie was found with given title %s", title))));
+  }
+
+  @Override
+  public List<Movie> getByDirector(String director) {
+    return movieJpaRepository.findAllByDirector(director).stream()
+        .map(movieMapper::movieEntityToDto)
+        .collect(Collectors.toList());
   }
 }

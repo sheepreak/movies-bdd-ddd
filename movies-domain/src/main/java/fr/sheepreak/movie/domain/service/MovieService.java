@@ -5,10 +5,11 @@ import fr.sheepreak.movie.domain.model.CreateMovieOperation;
 import fr.sheepreak.movie.domain.model.Movie;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class MovieService {
 
-  private MovieRepository movieRepository;
+  private final MovieRepository movieRepository;
 
   public MovieService(MovieRepository movieRepository) {
     this.movieRepository = movieRepository;
@@ -21,5 +22,9 @@ public class MovieService {
 
   public Movie getMovieByTitle(String title) {
     return movieRepository.getByTitle(title);
+  }
+
+  public List<Movie> getMoviesByDirector(String director) {
+    return movieRepository.getByDirector(director);
   }
 }
